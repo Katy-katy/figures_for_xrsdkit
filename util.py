@@ -3,6 +3,9 @@ import sklearn
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
+from xrsdkit.models import get_regression_models, get_classification_models
+from xrsdkit import definitions as xrsdefs
+
 
 #by https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 def plot_confusion_matrix(y_true, y_pred, classes,
