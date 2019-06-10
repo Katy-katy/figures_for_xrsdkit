@@ -85,10 +85,8 @@ def get_true_predicted_crossvalid(sys_cls, data):
                         noise_model_data['group_id'] = group_ids
                         results[name]['cross_val'] =  model.run_cross_validation(noise_model_data)
                         
-                        pr  = []
-                        for index, row in noise_model_data.iterrows():
-                            pr.append(model.predict(model.get_x_array(row[features]))[0])
-                        results[name]['predicted'] = pr
+                        s_d = model.standardize(noise_model_data, features)
+                        results[name]['predicted'] =  model.model.predict(s_d[model.features])
             # use the sys_cls to identify the populations and their structures
     for ipop,struct in enumerate(sys_cls.split('__')):
         pop_id = 'pop{}'.format(ipop)
@@ -107,10 +105,8 @@ def get_true_predicted_crossvalid(sys_cls, data):
             sys_cls_data['group_id'] = group_ids
             results[name]['cross_val'] =  model.run_cross_validation(sys_cls_data)
                         
-            pr  = []
-            for index, row in sys_cls_data.iterrows():
-                pr.append(model.predict(model.get_x_array(row[features]))[0])
-            results[name]['predicted'] = pr
+            s_d = model.standardize(sys_cls_data, features)
+            results[name]['predicted'] = model.model.predict(s_d[model.features])
             
         # add regressors for any modelable structure params 
         for stg_nm in xrsdefs.modelable_structure_settings[struct]:
@@ -134,11 +130,9 @@ def get_true_predicted_crossvalid(sys_cls, data):
                             group_ids, _ = model.group_by_pc1(stg_label_data,features)
                             stg_label_data['group_id'] = group_ids
                             results[name]['cross_val'] =  model.run_cross_validation(stg_label_data)
-                        
-                            pr  = []
-                            for index, row in stg_label_data.iterrows():
-                                pr.append(model.predict(model.get_x_array(row[features]))[0])
-                            results[name]['predicted'] = pr
+                
+                            s_d = model.standardize(stg_label_data, features)
+                            results[name]['predicted'] = model.model.predict(s_d[model.features])
                             
         # get all unique form factors for this population
         form_header = pop_id+'_form'
@@ -162,10 +156,8 @@ def get_true_predicted_crossvalid(sys_cls, data):
                         form_data['group_id'] = group_ids
                         results[name]['cross_val'] =  model.run_cross_validation(form_data)
                         
-                        pr  = []
-                        for index, row in form_data.iterrows():
-                                pr.append(model.predict(model.get_x_array(row[features]))[0])
-                        results[name]['predicted'] = pr
+                        s_d = model.standardize(form_data, features)
+                        results[name]['predicted'] =  model.model.predict(s_d[model.features])
                         
                 # add regressors for any modelable form factor params 
                 for stg_nm in xrsdefs.modelable_form_factor_settings[form_id]:
@@ -190,8 +182,6 @@ def get_true_predicted_crossvalid(sys_cls, data):
                                 stg_label_data['group_id'] = group_ids
                                 results[name]['cross_val'] =  model.run_cross_validation(stg_label_data)
                         
-                                pr  = []
-                                for index, row in stg_label_data.iterrows():
-                                        pr.append(model.predict(model.get_x_array(row[features]))[0])
-                                results[name]['predicted'] = pr                  
+                                s_d = model.standardize(stg_label_data, features)
+                                results[name]['predicted'] = model.model.predict(s_d[model.features])                  
     return results
